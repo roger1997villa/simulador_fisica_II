@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laboratorio Virtual de Física – Circuitos RC | Roger Villa</title>
+  <meta name="description" content="Simulador interactivo de circuitos RC. Carga y descarga de condensadores, mediciones en tiempo real y gráficos científicos. Desarrollado por Roger Villa." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ===================== HEADER ===================== -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="42" height="42">
+          <circle cx="24" cy="24" r="22" fill="none" stroke="#3fd0c9" stroke-width="2"/>
+          <path d="M8 24h6l3-8 4 16 3-8h4" fill="none" stroke="#3fd0c9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="34" cy="24" r="3.4" fill="#7c5cff"/>
+          <circle cx="38" cy="24" r="3.4" fill="none" stroke="#7c5cff" stroke-width="2"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Laboratorio Virtual de Física</h1>
+        <p class="subtitle">Circuitos Eléctricos RC · Resistencia – Capacitancia – Transitorios</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="badge">Simulador educativo interactivo</span>
+      <span class="badge badge-alt">Desarrollado por <strong>Roger Villa</strong></span>
+    </div>
+  </header>
+
+  <!-- ===================== NAVEGACIÓN DE PESTAÑAS ===================== -->
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active" data-tab="lab" role="tab">🔬 Laboratorio</button>
+    <button class="tab-btn" data-tab="guide" role="tab">📘 Guía de uso</button>
+    <button class="tab-btn" data-tab="experiments" role="tab">🧪 Experimentos</button>
+    <button class="tab-btn" data-tab="about" role="tab">ℹ️ Créditos</button>
+  </nav>
+
+  <!-- ===================== PESTAÑA: LABORATORIO ===================== -->
+  <main id="tab-lab" class="tab-panel active">
+    <div class="lab-layout">
+
+      <!-- ---------- PANEL IZQUIERDO: BIBLIOTECA ---------- -->
+      <aside class="panel panel-components">
+        <h2 class="panel-title">Biblioteca de componentes</h2>
+        <p class="panel-hint">Selecciona un componente y haz clic en el área de trabajo para colocarlo. Arrastra para mover.</p>
+
+        <div class="component-grid">
+          <button class="comp-btn" data-comp="source" title="Fuente DC">
+            <svg viewBox="0 0 60 40"><circle cx="30" cy="20" r="14" fill="none" stroke="currentColor" stroke-width="2"/><line x1="24" y1="20" x2="36" y2="20" stroke="currentColor" stroke-width="2"/><line x1="30" y1="14" x2="30" y2="26" stroke="currentColor" stroke-width="2"/></svg>
+            <span>Fuente DC</span>
+          </button>
+          <button class="comp-btn" data-comp="resistor" title="Resistencia">
+            <svg viewBox="0 0 60 40"><rect x="14" y="14" width="32" height="12" fill="none" stroke="currentColor" stroke-width="2"/><line x1="0" y1="20" x2="14" y2="20" stroke="currentColor" stroke-width="2"/><line x1="46" y1="20" x2="60" y2="20" stroke="currentColor" stroke-width="2"/></svg>
+            <span>Resistencia</span>
+          </button>
+          <button class="comp-btn" data-comp="capacitor" title="Condensador">
+            <svg viewBox="0 0 60 40"><line x1="0" y1="20" x2="25" y2="20" stroke="currentColor" stroke-width="2"/><line x1="25" y1="8" x2="25" y2="32" stroke="currentColor" stroke-width="3"/><line x1="35" y1="8" x2="35" y2="32" stroke="currentColor" stroke-width="3"/><line x1="35" y1="20" x2="60" y2="20" stroke="currentColor" stroke-width="2"/></svg>
+            <span>Condensador</span>
+          </button>
+          <button class="comp-btn" data-comp="switch" title="Interruptor">
+            <svg viewBox="0 0 60 40"><line x1="0" y1="20" x2="18" y2="20" stroke="currentColor" stroke-width="2"/><line x1="42" y1="20" x2="60" y2="20" stroke="currentColor" stroke-width="2"/><line x1="18" y1="20" x2="42" y2="8" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="20" r="2.5" fill="currentColor"/><circle cx="42" cy="20" r="2.5" fill="currentColor"/></svg>
+            <span>Interruptor</span>
+          </button>
+          <button class="comp-btn" data-comp="wire" title="Cable">
+            <svg viewBox="0 0 60 40"><path d="M4 20 Q30 -4 56 20" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <span>Cable</span>
+          </button>
+          <button class="comp-btn" data-comp="ground" title="Tierra">
+            <svg viewBox="0 0 60 40"><line x1="30" y1="4" x2="30" y2="16" stroke="currentColor" stroke-width="2"/><line x1="14" y1="16" x2="46" y2="16" stroke="currentColor" stroke-width="2"/><line x1="19" y1="22" x2="41" y2="22" stroke="currentColor" stroke-width="2"/><line x1="25" y1="28" x2="35" y2="28" stroke="currentColor" stroke-width="2"/></svg>
+            <span>Tierra</span>
+          </button>
+          <button class="comp-btn" data-comp="ammeter" title="Amperímetro">
+            <svg viewBox="0 0 60 40"><circle cx="30" cy="20" r="14" fill="none" stroke="currentColor" stroke-width="2"/><text x="30" y="25" text-anchor="middle" font-size="13" fill="currentColor">A</text></svg>
+            <span>Amperímetro</span>
+          </button>
+          <button class="comp-btn" data-comp="voltmeter" title="Voltímetro">
+            <svg viewBox="0 0 60 40"><circle cx="30" cy="20" r="14" fill="none" stroke="currentColor" stroke-width="2"/><text x="30" y="25" text-anchor="middle" font-size="13" fill="currentColor">V</text></svg>
+            <span>Voltímetro</span>
+          </button>
+        </div>
+
+        <div class="tool-actions">
+          <button id="btn-delete" class="btn btn-danger">🗑 Eliminar seleccionado</button>
+          <button id="btn-clear" class="btn btn-ghost">✖ Vaciar circuito</button>
+        </div>
+
+        <div class="warnings" id="warnings" aria-live="polite"></div>
+      </aside>
+
+      <!-- ---------- ÁREA CENTRAL: CONSTRUCTOR ---------- -->
+      <section class="panel panel-workspace">
+        <div class="workspace-header">
+          <h2 class="panel-title">Área de construcción</h2>
+          <div class="workspace-tools">
+            <label class="toggle-label"><input type="checkbox" id="grid-toggle" checked /> Rejilla</label>
+            <span class="sel-info" id="sel-info">Nada seleccionado</span>
+          </div>
+        </div>
+        <div class="workspace-scroll">
+          <svg id="circuit-svg" class="circuit-svg" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(120,150,180,0.10)" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect id="grid-bg" width="100%" height="100%" fill="url(#grid)"/>
+            <g id="wires-layer"></g>
+            <g id="components-layer"></g>
+            <g id="instruments-layer"></g>
+          </svg>
+        </div>
+        <p class="workspace-tip">💡 Haz clic en un componente para seleccionarlo y editar sus valores en el panel derecho. Usa el modo <strong>Cable</strong> para conectar dos terminales.</p>
+      </section>
+
+      <!-- ---------- PANEL DERECHO: CONTROLES + MEDICIONES ---------- -->
+      <aside class="panel panel-controls">
+        <h2 class="panel-title">Controles de simulación</h2>
+
+        <div class="control-group">
+          <label class="field-label">Velocidad de simulación (<span id="speed-val">1×</span>)</label>
+          <input type="range" id="speed" min="0.1" max="10" step="0.1" value="1" class="slider" />
+        </div>
+
+        <div class="btn-grid">
+          <button id="btn-start" class="btn btn-primary">▶ Iniciar</button>
+          <button id="btn-pause" class="btn btn-warn" disabled>⏸ Pausar</button>
+          <button id="btn-resume" class="btn btn-ghost" disabled>⏵ Reanudar</button>
+          <button id="btn-reset" class="btn btn-ghost">⟲ Reiniciar</button>
+          <button id="btn-charge" class="btn btn-accent">⚡ Cargar</button>
+          <button id="btn-discharge" class="btn btn-danger">🔌 Descargar</button>
+        </div>
+
+        <h2 class="panel-title mt">Mediciones en vivo</h2>
+        <div class="meters">
+          <div class="meter"><span class="meter-label">Tiempo</span><span class="meter-value" id="m-time">0.000 s</span></div>
+          <div class="meter"><span class="meter-label">V fuente</span><span class="meter-value" id="m-vsource">0.00 V</span></div>
+          <div class="meter"><span class="meter-label">V condensador</span><span class="meter-value" id="m-vc">0.00 V</span></div>
+          <div class="meter"><span class="meter-label">Corriente</span><span class="meter-value" id="m-i">0.00 µA</span></div>
+          <div class="meter"><span class="meter-label">Carga Q</span><span class="meter-value" id="m-q">0.00 µC</span></div>
+          <div class="meter"><span class="meter-label">Constante τ</span><span class="meter-value" id="m-tau">– s</span></div>
+          <div class="meter meter-ammeter"><span class="meter-label">Amperímetro</span><span class="meter-value" id="m-ammeter">— A</span></div>
+          <div class="meter meter-voltmeter"><span class="meter-label">Voltímetro</span><span class="meter-value" id="m-voltmeter">— V</span></div>
+        </div>
+        <p class="small-note">Los valores son resultados de la simulación numérica, no mediciones de un circuito físico.</p>
+      </aside>
+    </div>
+
+    <!-- ---------- GRÁFICOS ---------- -->
+    <section class="panel panel-graphs">
+      <h2 class="panel-title">Gráficos científicos</h2>
+      <div class="graphs-grid">
+        <figure class="graph-card">
+          <figcaption>V<sub>C</sub>(t) – Voltaje del condensador (V)</figcaption>
+          <canvas id="chart-vc" width="520" height="260"></canvas>
+        </figure>
+        <figure class="graph-card">
+          <figcaption>I(t) – Corriente eléctrica (A)</figcaption>
+          <canvas id="chart-i" width="520" height="260"></canvas>
+        </figure>
+        <figure class="graph-card">
+          <figcaption>Q(t) – Carga almacenada (C)</figcaption>
+          <canvas id="chart-q" width="520" height="260"></canvas>
+        </figure>
+        <figure class="graph-card">
+          <figcaption>V<sub>C</sub>(t) – Carga / Descarga comparadas (V)</figcaption>
+          <canvas id="chart-cd" width="520" height="260"></canvas>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== PESTAÑA: GUÍA ===================== -->
+  <main id="tab-guide" class="tab-panel">
+    <section class="panel content-panel">
+      <h2 class="panel-title">Guía de uso del laboratorio virtual</h2>
+      <div class="guide-grid">
+        <article class="guide-step"><h3>1. Ingresar al laboratorio</h3><p>Abre la pestaña <strong>🔬 Laboratorio</strong>. Verás tres paneles: biblioteca de componentes (izquierda), área de construcción (centro) y controles/mediciones (derecha).</p></article>
+        <article class="guide-step"><h3>2. Seleccionar componentes</h3><p>Haz clic en cualquier tarjeta de la biblioteca. El componente aparecerá en el área de trabajo; arrástralo para reposicionarlo.</p></article>
+        <article class="guide-step"><h3>3. Ubicar una resistencia</h3><p>Selecciona <em>Resistencia</em>, colócala y haz clic sobre ella para editar su valor en ohmios (Ω) en el panel derecho.</p></article>
+        <article class="guide-step"><h3>4. Incorporar un condensador</h3><p>Selecciona <em>Condensador</em>. Puedes ingresar el valor en F, µF o nF; el simulador convierte automáticamente.</p></article>
+        <article class="guide-step"><h3>5. Agregar fuente de voltaje</h3><p>Selecciona <em>Fuente DC</em> y ajusta su voltaje (V). La fuente tiene dos terminales: positiva (arriba) y negativa (abajo).</p></article>
+        <article class="guide-step"><h3>6. Conectar con cables</h3><p>Selecciona el modo <em>Cable</em> en la biblioteca, haz clic en el terminal de origen y luego en el terminal de destino. Aparecerá un cable con continuidad eléctrica real.</p></article>
+        <article class="guide-step"><h3>7. Modificar valores</h3><p>Haz clic en cualquier componente. En el panel de propiedades (que aparece en el panel derecho) edita su valor y pulsa <em>Aplicar</em>.</p></article>
+        <article class="guide-step"><h3>8. Usar el interruptor</h3><p>Haz clic sobre el interruptor en el área de trabajo para alternar entre abierto (○) y cerrado (●). Su estado afecta al flujo de corriente.</p></article>
+        <article class="guide-step"><h3>9. Conectar el amperímetro</h3><p>Selecciona <em>Amperímetro</em>, colócalo <strong>en serie</strong> en la rama del circuito y conéctalo con cables. Su lectura se actualiza en vivo.</p></article>
+        <article class="guide-step"><h3>10. Conectar el voltímetro</h3><p>Selecciona <em>Voltímetro</em> y conéctalo <strong>en paralelo</strong> entre los puntos a medir. Elige los nodos en su panel de propiedades.</p></article>
+        <article class="guide-step"><h3>11. Iniciar simulación</h3><p>Pulsa <strong>▶ Iniciar</strong>. La simulación avanza según la velocidad seleccionada. Puedes pausar y reanudar en cualquier momento.</p></article>
+        <article class="guide-step"><h3>12. Observar la carga</h3><p>Con el interruptor cerrado y el condensador conectado, pulsa <strong>⚡ Cargar</strong>. V<sub>C</sub> sube asintóticamente hacia V fuente.</p></article>
+        <article class="guide-step"><h3>13. Realizar la descarga</h3><p>Pulsa <strong>🔌 Descargar</strong> o abre el interruptor: V<sub>C</sub> decae exponencialmente hacia 0 V.</p></article>
+        <article class="guide-step"><h3>14. Interpretar gráficos</h3><p>Cada gráfico muestra ejes con unidades y marcadores verticales en 1τ, 2τ, 3τ, 4τ y 5τ. La curva se dibuja en tiempo real.</p></article>
+        <article class="guide-step"><h3>15. Identificar τ</h3><p>La constante τ = R·C se muestra en el panel de mediciones y como línea punteada en los gráficos. En t = τ, V<sub>C</sub> ≈ 63.2% de V fuente (carga) o 36.8% (descarga).</p></article>
+        <article class="guide-step"><h3>16. Reiniciar</h3><p>El botón <strong>⟲ Reiniciar</strong> detiene la simulación y vuelve al estado inicial (t=0, V<sub>C</sub>=0).</p></article>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== PESTAÑA: EXPERIMENTOS ===================== -->
+  <main id="tab-experiments" class="tab-panel">
+    <section class="panel content-panel">
+      <h2 class="panel-title">Experimentos preconfigurados</h2>
+      <div class="experiments-grid" id="experiments-grid"></div>
+    </section>
+  </main>
+
+  <!-- ===================== PESTAÑA: CRÉDITOS ===================== -->
+  <main id="tab-about" class="tab-panel">
+    <section class="panel content-panel about-panel">
+      <h2 class="panel-title">Créditos del proyecto</h2>
+      <div class="credit-card">
+        <p><strong>Proyecto:</strong> Laboratorio Virtual de Física – Circuitos Eléctricos RC</p>
+        <p><strong>Desarrollado por:</strong> Roger Villa</p>
+        <p><strong>Área:</strong> Física – Electricidad y Electromagnetismo</p>
+        <p><strong>Tema:</strong> Circuitos eléctricos, resistencia, capacitancia y transitorios RC</p>
+        <p><strong>Tipo de herramienta:</strong> Simulador educativo interactivo</p>
+        <p class="disclaimer">⚠️ Esta aplicación es una <strong>simulación numérica educativa</strong>. Los valores mostrados provienen del modelo matemático de circuitos RC y no constituyen mediciones de un circuito físico real.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>© <span id="year"></span> Roger Villa · Laboratorio Virtual de Física – Circuitos RC</span>
+    <span>Simulación numérica educativa · Sin backend · GitHub Pages ready</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
