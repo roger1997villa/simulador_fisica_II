@@ -24,7 +24,7 @@ function $(id) { return document.getElementById(id); }
 function fmt(value, unit, decimals = 3) { return !isFinite(value) ? '—' : value.toFixed(decimals) + ' ' + unit; }
 function engFormat(value, baseUnit) {
   const abs = Math.abs(value);
-  if (abs === 0) return '0 ' + baseUnit;
+  if (abs === 0 || abs < 1e-12) return '0.00 ' + baseUnit; // Corregido para evitar e-137
   if (abs >= 1) return value.toFixed(3) + ' ' + baseUnit;
   if (abs >= 1e-3) return (value * 1e3).toFixed(2) + ' m' + baseUnit;
   if (abs >= 1e-6) return (value * 1e6).toFixed(2) + ' µ' + baseUnit;
@@ -312,23 +312,20 @@ function step(ts) {
     }
   }
   updateMeasurements(); drawAllCharts(); drawElectrons();
+  
+  // ACTUALIZACIÓN DE PANTALLAS LCD
+  const currentI = state.history.i.length ? state.history.i[state.history.i.length - 1] : 0;
+  const currentVc = state.history.vc.length ? state.history.vc[state.history.vc.length - 1] : 0;
+  
   state.components.forEach(c => {
-    if (c.type === 'ammeter' && c._lcdText) { const i = state.history.i.length ? state.history.i[state.history.i.length - 1] : 0; c._lcdText.textContent = engFormat(Math.abs(i), 'A'); }
-    if (c.type === 'voltmeter' && c._lcdText) { const vc = state.history.vc.length ? state.history.vc[state.history.vc.length - 1] : 0; c._lcdText.textContent = fmt(vc, 'V', 2); }
+    if (c.type === 'ammeter' && c._lcdText) { 
+      c._lcdText.textContent = engFormat(Math.abs(currentI), 'A'); 
+    }
+    if (c.type === 'voltmeter' && c._lcdText) { 
+      c._lcdText.textContent = fmt(currentVc, 'V', 2); 
+    }
   });
   requestAnimationFrame(step);
-}
-
-function getNodeVoltage(compId, termIdx) {
-  const comp = state.components.find(c => c.id === compId);
-  const source = state.components.find(c => c.type === 'source');
-  if (!comp || !source) return 0;
-  const a = analyzeCircuit(); if (!a.valid) return 0;
-  let vc = state.history.vc.length ? state.history.vc[state.history.vc.length - 1] : 0;
-  if (comp.type === 'source') return termIdx === 0 ? source.value : 0;
-  if (comp.type === 'resistor') return termIdx === 0 ? (source.value - vc) : vc;
-  if (comp.type === 'capacitor') return termIdx === 0 ? vc : 0;
-  return 0;
 }
 
 function updateMeasurements() {
