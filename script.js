@@ -425,24 +425,20 @@ function drawElectrons() {
     const p1 = getTerminalPos(w.a.compId, w.a.termIdx); const p2 = getTerminalPos(w.b.compId, w.b.termIdx);
     if (!p1 || !p2) return;
     
-    // Dibujar electrones (Partículas amarillas sólidas)
+    // Dibujar electrones (Partículas amarillas sólidas más grandes)
     for (let j = 0; j < numElectrons; j++) {
       let t = (j / numElectrons + electronAnimFrame) % 1; if (t < 0) t += 1;
       const x = p1.x + (p2.x - p1.x) * t; const y = p1.y + (p2.y - p1.y) * t;
-      el('circle', { cx: x, cy: y, r: 3.5, fill: '#ffd700', filter: 'url(#glow)', opacity: 0.9 }, particlesLayer);
+      el('circle', { cx: x, cy: y, r: 5, fill: '#ffd700', filter: 'url(#glow)', opacity: 1 }, particlesLayer);
     }
 
-    // NUEVO: Dibujar paquetes de ENERGÍA (Pulsos de luz naranja con estela)
-    // La energía se mueve igual que la corriente pero la representamos más rápida y luminosa.
+    // Paquetes de ENERGÍA (Pulsos de luz naranja)
     const numEnergyPulses = Math.min(5, Math.max(1, Math.floor(current * 50000)));
     for (let k = 0; k < numEnergyPulses; k++) {
       let te = (k / numEnergyPulses + electronAnimFrame * 1.5) % 1; if (te < 0) te += 1;
       const ex = p1.x + (p2.x - p1.x) * te; const ey = p1.y + (p2.y - p1.y) * te;
-      
-      // Estela de energía
-      el('circle', { cx: ex, cy: ey, r: 6, fill: 'rgba(255, 100, 0, 0.3)', filter: 'url(#glow)' }, particlesLayer);
-      // Núcleo brillante de la energía
-      el('circle', { cx: ex, cy: ey, r: 2.5, fill: '#ffffff', filter: 'url(#glow)' }, particlesLayer);
+      el('circle', { cx: ex, cy: ey, r: 7, fill: 'rgba(255, 100, 0, 0.4)', filter: 'url(#glow)' }, particlesLayer);
+      el('circle', { cx: ex, cy: ey, r: 3, fill: '#ffffff', filter: 'url(#glow)' }, particlesLayer);
     }
   });
 }
