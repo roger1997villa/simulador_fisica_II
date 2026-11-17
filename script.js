@@ -34,9 +34,9 @@ function engFormat(value, baseUnit) {
 
 const COMPONENTS = {
   source:     { label: 'Batería',      w: 80, h: 40, terminals: [{x:-40,y:0},{x:40,y:0}], value: 10, unit: 'V' },
-  resistor:   { label: 'Resistencia',  w: 70, h: 20, terminals: [{x:-35,y:0},{x:35,y:0}], value: 1000, unit: 'Ω' },
-  capacitor:  { label: 'Condensador',  w: 60, h: 30, terminals: [{x:-30,y:0},{x:30,y:0}], value: 1e-6, unit: 'F' },
-  switch:     { label: 'Interruptor',  w: 70, h: 20, terminals: [{x:-35,y:0},{x:35,y:0}], closed: false },
+  resistor:   { label: 'Resistencia',  w: 70, h: 20, terminals: [{x:-45,y:0},{x:45,y:0}], value: 1000, unit: 'Ω' },
+  capacitor:  { label: 'Condensador',  w: 60, h: 30, terminals: [{x:-40,y:0},{x:40,y:0}], value: 1e-6, unit: 'F' },
+  switch:     { label: 'Interruptor',  w: 70, h: 20, terminals: [{x:-40,y:0},{x:40,y:0}], closed: false },
   ground:     { label: 'Tierra',       w: 40, h: 40, terminals: [{x:0,y:-20}] },
   ammeter:    { label: 'Amperímetro',  w: 70, h: 50, terminals: [{x:-30,y:0},{x:30,y:0}] },
   voltmeter:  { label: 'Voltímetro',   w: 70, h: 50, terminals: [{x:-30,y:0},{x:30,y:0}] },
@@ -53,22 +53,15 @@ function renderComponent(c) {
     const label = isAmp ? 'A' : 'V';
     const bg = isAmp ? '#2a1f0a' : '#0a1a2a';
     
-    // Cuerpo del multímetro realista
-    el('rect', { class:'comp-body', x:-30, y:-35, width:60, height:70, rx:8, fill:'#2d2d2d', stroke:'#111', 'stroke-width':3, filter:'url(#shadow)' }, g);
-    // Pantalla LCD
+    el('rect', { class:'comp-body', x:-30, y:-35, width:60, height:70, rx:8, fill:'#2d2d2d', stroke:'#111', 'stroke-width':3 }, g);
     el('rect', { x:-24, y:-28, width:48, height:24, rx:3, fill:bg, stroke:'#444', 'stroke-width':2 }, g);
     el('text', { x:-18, y:-12, 'text-anchor':'start', fill:color, 'font-size':10, 'font-weight':700 }, g).textContent = label;
-    // Selector de perilla
-    el('circle', { cx: 0, cy: 15, r: 10, fill:'#444', stroke:'#222', 'stroke-width':2 }, g);
-    el('line', { x1:0, y1:15, x2:0, y2:5, stroke:'#ccc', 'stroke-width':2 }, g);
     
     const valText = el('text', { class:'lcd-value', x:2, y:-10, 'text-anchor':'middle', fill:color, 'font-size':13, 'font-family':'monospace', 'font-weight':'bold' }, g);
     valText.textContent = '0.00';
     
     meta.terminals.forEach((t, i) => {
       el('circle', { class:'terminal', cx:t.x, cy:t.y, r:5, 'data-comp':c.id, 'data-term':i }, g).addEventListener('mousedown', (e) => onTerminalMouseDown(e, c, i));
-      // Cables de prueba rojo/negro
-      el('path', { d: `M ${t.x} ${t.y} Q ${t.x + (i===0?-10:10)} ${t.y+20} ${t.x} ${t.y+45}`, fill:'none', stroke: i===0?'#ff3333':'#333', 'stroke-width':3 }, g);
     });
     c._lcdText = valText;
     return g;
@@ -76,32 +69,29 @@ function renderComponent(c) {
 
   switch (c.type) {
     case 'source':
-      // Batería tipo pila rectangular PhET
-      el('rect', { class:'comp-body', x:-35, y:-18, width:70, height:36, rx:4, fill:'#111', stroke:'#333', 'stroke-width':2, filter:'url(#shadow)' }, g);
-      el('rect', { x:-35, y:-18, width:25, height:36, rx:4, fill:'#f0b429' }, g); // Lado positivo
+      el('rect', { class:'comp-body', x:-35, y:-18, width:70, height:36, rx:4, fill:'#111', stroke:'#333', 'stroke-width':2 }, g);
+      el('rect', { x:-35, y:-18, width:25, height:36, rx:4, fill:'#f0b429' }, g);
       el('text', { x:-22, y:5, 'text-anchor':'middle', fill:'#111', 'font-size':18, 'font-weight':900 }, g).textContent = '+';
       el('text', { x:22, y:5, 'text-anchor':'middle', fill:'#666', 'font-size':18, 'font-weight':900 }, g).textContent = '-';
       el('text', { x:0, y:-25, 'text-anchor':'middle', fill:'#e6eef7', 'font-size':12 }, g).textContent = (c.value ?? 0).toFixed(2) + ' V';
       break;
     case 'resistor':
-      // Resistencia con franjas de colores
-      el('rect', { class:'comp-body', x:-35,y:-10,width:70,height:20, fill:'#e0c88a', stroke:'#a08040','stroke-width':2, rx:5, filter:'url(#shadow)' }, g);
-      el('line', { x1:-25,y1:-10,x2:-25,y2:10, stroke:'#000','stroke-width':3 }, g); // Negro
-      el('line', { x1:-15,y1:-10,x2:-15,y2:10, stroke:'#8B4513','stroke-width':3 }, g); // Café
-      el('line', { x1:-5,y1:-10,x2:-5,y2:10, stroke:'#FF0000','stroke-width':3 }, g); // Rojo
-      el('line', { x1:25,y1:-10,x2:25,y2:10, stroke:'#D4AF37','stroke-width':3 }, g); // Dorado
+      el('rect', { class:'comp-body', x:-35,y:-10,width:70,height:20, fill:'#e0c88a', stroke:'#a08040','stroke-width':2, rx:5 }, g);
+      el('line', { x1:-25,y1:-10,x2:-25,y2:10, stroke:'#000','stroke-width':3 }, g);
+      el('line', { x1:-15,y1:-10,x2:-15,y2:10, stroke:'#8B4513','stroke-width':3 }, g);
+      el('line', { x1:-5,y1:-10,x2:-5,y2:10, stroke:'#FF0000','stroke-width':3 }, g);
+      el('line', { x1:25,y1:-10,x2:25,y2:10, stroke:'#D4AF37','stroke-width':3 }, g);
       el('text', { x:0, y:-18, 'text-anchor':'middle', fill:'#e6eef7', 'font-size':11 }, g).textContent = c.value >= 1e3 ? (c.value/1e3).toFixed(2)+' kΩ' : c.value.toFixed(0)+' Ω';
       break;
     case 'capacitor':
-      // Condensador cilíndrico
-      el('rect', { class:'comp-body', x:-20, y:-15, width:40, height:30, rx:3, fill:'#1f4a7a', stroke:'#3a5570', 'stroke-width':2, filter:'url(#shadow)' }, g);
+      el('rect', { class:'comp-body', x:-20, y:-15, width:40, height:30, rx:3, fill:'#1f4a7a', stroke:'#3a5570', 'stroke-width':2 }, g);
       el('line', { x1:-6, y1:-18, x2:-6, y2:18, stroke:'#ccc', 'stroke-width':4 }, g);
       el('line', { x1:6, y1:-18, x2:6, y2:18, stroke:'#ccc', 'stroke-width':4 }, g);
       el('text', { x:0, y:-24, 'text-anchor':'middle', fill:'#e6eef7', 'font-size':11 }, g).textContent = c.value >= 1e-6 ? (c.value*1e6).toFixed(2)+' µF' : (c.value*1e9).toFixed(2)+' nF';
       break;
     case 'switch':
-      el('line', { x1:-35,y1:0,x2:-20,y2:0, stroke:'#00bcd4','stroke-width':4 }, g);
-      el('line', { x1:20,y1:0,x2:35,y2:0, stroke:'#00bcd4','stroke-width':4 }, g);
+      el('line', { x1:-40,y1:0,x2:-20,y2:0, stroke:'#00bcd4','stroke-width':4 }, g);
+      el('line', { x1:20,y1:0,x2:40,y2:0, stroke:'#00bcd4','stroke-width':4 }, g);
       el('circle', { cx:-20, cy:0, r:4, fill:'#ccc' }, g);
       el('circle', { cx:20, cy:0, r:4, fill:'#ccc' }, g);
       if (c.closed) el('line', { class:'comp-body', x1:-20,y1:0,x2:20,y2:0, stroke:'#00bcd4','stroke-width':4 }, g);
@@ -369,54 +359,13 @@ $('btn-charge').addEventListener('click', chargeCapacitor);
 $('btn-discharge').addEventListener('click', dischargeCapacitor);
 $('speed').addEventListener('input', (e) => { state.sim.speed = parseFloat(e.target.value); $('speed-val').textContent = state.sim.speed.toFixed(1) + '×'; });
 
-const charts = { vc: $('chart-vc'), i: $('chart-i'), q: $('chart-q'), cd: $('chart-cd') };
-function drawChart(canvas, series, opts) {
-  const ctx = canvas.getContext('2d'); const W = canvas.width, H = canvas.height;
-  const pad = { l: 48, r: 14, t: 14, b: 28 }; const plotW = W - pad.l - pad.r; const plotH = H - pad.t - pad.b;
-  ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#060a10'; ctx.fillRect(0, 0, W, H);
-  const xs = series.x, ys = series.y;
-  if (!xs.length) { ctx.fillStyle = '#93a6bd'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Sin datos aún. Inicia la simulación.', W/2, H/2); return; }
-  const xMin = 0; const xMax = Math.max(xs[xs.length-1], opts.tau * 5 || 1);
-  let yMin = Math.min(...ys, 0); let yMax = Math.max(...ys, 0);
-  if (yMax - yMin < 1e-12) { yMax = 1; yMin = 0; }
-  const padY = (yMax - yMin) * 0.1; yMin -= padY; yMax += padY;
-  const X = v => pad.l + (v - xMin) / (xMax - xMin || 1) * plotW;
-  const Y = v => pad.t + plotH - (v - yMin) / (yMax - yMin || 1) * plotH;
-  ctx.strokeStyle = 'rgba(80,130,180,0.15)'; ctx.lineWidth = 1;
-  for (let i = 0; i <= 5; i++) { const y = pad.t + (plotH * i / 5); ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + plotW, y); ctx.stroke(); }
-  for (let i = 0; i <= 5; i++) { const x = pad.l + (plotW * i / 5); ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, pad.t + plotH); ctx.stroke(); }
-  if (opts.tau && opts.tau > 0) {
-    for (let k = 1; k <= 5; k++) {
-      const tx = k * opts.tau; if (tx > xMax) break; const x = X(tx);
-      ctx.strokeStyle = 'rgba(240,180,41,0.5)'; ctx.setLineDash([4,4]);
-      ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, pad.t + plotH); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = '#f0b429'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(k + 'τ', x, pad.t + 10);
-    }
-  }
-  ctx.strokeStyle = '#3a5570'; ctx.lineWidth = 1.4;
-  ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t + plotH); ctx.lineTo(pad.l + plotW, pad.t + plotH); ctx.stroke();
-  ctx.fillStyle = '#93a6bd'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
-  for (let i = 0; i <= 5; i++) { const val = yMax - (yMax - yMin) * i / 5; const y = pad.t + plotH * i / 5; ctx.fillText(opts.fmtY(val), pad.l - 6, y + 4); }
-  ctx.textAlign = 'center';
-  for (let i = 0; i <= 5; i++) { const val = xMin + (xMax - xMin) * i / 5; const x = pad.l + plotW * i / 5; ctx.fillText(val.toFixed(2) + ' s', x, H - 8); }
-  if (opts.secondSeries) drawSeries(ctx, opts.secondSeries.x, opts.secondSeries.y, X, Y, '#ef5b6b', 2);
-  drawSeries(ctx, xs, ys, X, Y, opts.color, 2.4);
-  ctx.font = '11px sans-serif'; ctx.textAlign = 'left'; ctx.fillStyle = opts.color; ctx.fillText('● ' + opts.label, pad.l + 6, pad.t + 12);
-  if (opts.secondSeries) { ctx.fillStyle = '#ef5b6b'; ctx.fillText('● ' + opts.secondLabel, pad.l + 6, pad.t + 26); }
-}
-function drawSeries(ctx, xs, ys, X, Y, color, width) {
-  ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath();
-  for (let i = 0; i < xs.length; i++) { const x = X(xs[i]), y = Y(ys[i]); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
-  ctx.stroke();
-}
-function drawAllCharts() {
-  const a = analyzeCircuit(); const tau = a.valid ? a.tau : 0;
-  drawChart(charts.vc, { x: state.history.t, y: state.history.vc }, { color: '#3fd0c9', label: 'V_C(t)', tau, fmtY: v => v.toFixed(2) });
-  drawChart(charts.i, { x: state.history.t, y: state.history.i }, { color: '#7c5cff', label: 'I(t)', tau, fmtY: v => v.toExponential(1) });
-  drawChart(charts.q, { x: state.history.t, y: state.history.q }, { color: '#34d399', label: 'Q(t)', tau, fmtY: v => v.toExponential(1) });
-  const xC = state.history.t; const yC = state.history.vcCharge && state.history.vcCharge.length ? state.history.vcCharge : state.history.vc;
-  drawChart(charts.cd, { x: xC, y: state.history.vc }, { color: '#3fd0c9', label: 'Actual', tau, fmtY: v => v.toFixed(2), secondSeries: { x: xC, y: yC }, secondLabel: 'Carga previa' });
-}
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active'); $('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
 
 let electronAnimFrame = 0;
 function drawElectrons() {
@@ -426,8 +375,7 @@ function drawElectrons() {
   const i = state.history.i.length ? state.history.i[state.history.i.length - 1] : 0;
   const current = Math.abs(i); if (current < 1e-7) return;
   
-  // ESTILO PHET: Electrones azules con punta de flecha
-  const numElectrons = Math.min(25, Math.max(5, Math.floor(current * 150000))); 
+  const numElectrons = Math.min(30, Math.max(5, Math.floor(current * 150000))); 
   electronAnimFrame += (current > 0 ? 0.025 : -0.025);
 
   state.wires.forEach(w => {
@@ -437,76 +385,13 @@ function drawElectrons() {
     for (let j = 0; j < numElectrons; j++) {
       let t = (j / numElectrons + electronAnimFrame) % 1; if (t < 0) t += 1;
       const x = p1.x + (p2.x - p1.x) * t; const y = p1.y + (p2.y - p1.y) * t;
-      
-      // Calcular ángulo para la flecha
       const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
-
-      // Dibujar el electrón como un círculo azul con un halo brillante
       el('circle', { cx: x, cy: y, r: 6, fill: '#00d2ff', filter: 'url(#glow)', opacity: 0.9 }, particlesLayer);
-      
-      // Dibujar la flechita interior
-      el('path', { 
-        d: `M ${x-2} ${y-3} L ${x+3} ${y} L ${x-2} ${y+3} Z`, 
-        fill: '#ffffff', 
-        transform: `rotate(${angle}, ${x}, ${y})` 
-      }, particlesLayer);
+      el('path', { d: `M ${x-2} ${y-3} L ${x+3} ${y} L ${x-2} ${y+3} Z`, fill: '#ffffff', transform: `rotate(${angle}, ${x}, ${y})` }, particlesLayer);
     }
   });
 }
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active'); $('tab-' + btn.dataset.tab).classList.add('active');
-  });
-});
-
-const EXPERIMENTS = [
-  { title: 'Exp 1: Carga', objective: 'Observar la curva exponencial de carga.', config: { V: 10, R: 1000, C: 1e-6 }, procedure: ['Cierra interruptor.', 'Pulsa Cargar.'], expected: 'V_C alcanza 6.32 V en τ.' },
-  { title: 'Exp 2: Descarga', objective: 'Observar la curva de descarga.', config: { V: 10, R: 1000, C: 1e-6 }, procedure: ['Carga el condensador.', 'Pulsa Descargar.'], expected: 'V_C cae a 3.68 V en τ.' },
-  { title: 'Exp 3: Efecto R', objective: 'Comprobar que τ = RC.', config: { V: 10, R: 2200, C: 1e-6 }, procedure: ['Prueba con R=1k y R=2.2k.'], expected: 'Al duplicar R, se duplica τ.' },
-  { title: 'Exp 4: Efecto C', objective: 'Comprobar que τ = RC.', config: { V: 10, R: 1000, C: 4.7e-6 }, procedure: ['Prueba con C=1µF y C=4.7µF.'], expected: 'Al aumentar C, τ crece.' },
-  { title: 'Exp 5: Comparación τ', objective: 'Comparar dos constantes.', config: { V: 10, R: 1000, C: 2.2e-6 }, procedure: ['Carga con 1µF y luego con 2.2µF.'], expected: 'La mayor τ tarda más.' },
-  { title: 'Exp 6: Diferentes V', objective: 'Forma de onda vs amplitud.', config: { V: 5, R: 1000, C: 1e-6 }, procedure: ['Carga con V=5 y V=10.'], expected: 'Misma forma exponencial.' },
-];
-
-function renderExperiments() {
-  const grid = $('experiments-grid'); grid.innerHTML = '';
-  EXPERIMENTS.forEach((exp, idx) => {
-    const card = document.createElement('div'); card.className = 'exp-card';
-    card.innerHTML = `<h3>${exp.title}</h3><p><strong>Objetivo:</strong> ${exp.objective}</p><p><strong>Config:</strong> V=${exp.config.V}V, R=${exp.config.R}Ω, C=${(exp.config.C*1e6).toFixed(2)}µF</p><ul>${exp.procedure.map(s=>`<li>${s}</li>`).join('')}</ul><p><strong>Esperado:</strong> ${exp.expected}</p><button class="btn btn-primary btn-block exp-btn" data-exp="${idx}">Cargar experimento</button>`;
-    grid.appendChild(card);
-  });
-  grid.querySelectorAll('.exp-btn').forEach(b => b.addEventListener('click', () => loadExperiment(parseInt(b.dataset.exp))));
-}
-
-function loadExperiment(idx) {
-  const exp = EXPERIMENTS[idx]; if (!exp) return;
-  state.components = []; state.wires = []; state.selectedId = null; state.wireStart = null; state.mode = 'idle'; state.placingType = null;
-  
-  // Posiciones para que se vea como un lazo rectangular perfecto
-  const src = { id: state.nextId++, type: 'source', x: 150, y: 150, value: exp.config.V };
-  const res = { id: state.nextId++, type: 'resistor', x: 350, y: 130, value: exp.config.R };
-  const sw = { id: state.nextId++, type: 'switch', x: 500, y: 150, closed: true };
-  const cap = { id: state.nextId++, type: 'capacitor', x: 350, y: 300, value: exp.config.C };
-  
-  state.components.push(src, res, sw, cap);
-  const addWire = (a, at, b, bt) => state.wires.push({ id: state.nextId++, a: { compId: a.id, termIdx: at }, b: { compId: b.id, termIdx: bt } });
-  
-  // Conexiones
-  addWire(src, 0, res, 0); // + Batería a Resistencia
-  addWire(res, 1, sw, 0);  // Resistencia a Interruptor
-  addWire(sw, 1, cap, 0);  // Interruptor a Condensador
-  addWire(cap, 1, src, 1); // Condensador a - Batería
-  
-  resetSimulation(); renderAll(); showWarning('Experimento cargado.', true);
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector('.tab-btn[data-tab="lab"]').classList.add('active'); $('tab-lab').classList.add('active');
-}
-
 $('year').textContent = new Date().getFullYear();
-renderExperiments(); updateButtonStates(); renderAll(); drawAllCharts();
+renderAll(); updateButtonStates();
 requestAnimationFrame(step);
-loadExperiment(0);
