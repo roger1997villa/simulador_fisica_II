@@ -27,6 +27,7 @@
     <button class="tab-btn" data-tab="about">ℹ️ Créditos</button>
   </nav>
 
+  <!-- PESTAÑA LABORATORIO -->
   <main id="tab-lab" class="tab-panel active">
     <div class="lab-layout">
       <aside class="panel">
@@ -102,9 +103,55 @@
     </div>
   </main>
 
-  <main id="tab-guide" class="tab-panel"><section class="panel"><h2 class="panel-title">Guía de uso</h2></section></main>
-  <main id="tab-experiments" class="tab-panel"><section class="panel"><h2 class="panel-title">Experimentos</h2></section></main>
-  <main id="tab-about" class="tab-panel"><section class="panel"><h2 class="panel-title">Créditos</h2><p>Desarrollado por <strong>Roger Villa</strong>.</p></section></main>
+  <!-- PESTAÑA GUÍA DE USO (AHORA CON CONTENIDO) -->
+  <main id="tab-guide" class="tab-panel">
+    <section class="panel">
+      <h2 class="panel-title">Guía de uso del laboratorio virtual</h2>
+      <div class="guide-grid">
+        <article class="guide-step"><h3>1. Ingresar al laboratorio</h3><p>Abre la pestaña <strong>🔬 Laboratorio</strong>. Verás tres paneles: biblioteca de componentes, área de construcción y controles.</p></article>
+        <article class="guide-step"><h3>2. Seleccionar componentes</h3><p>Haz clic en cualquier tarjeta de la biblioteca. El componente aparecerá en el área de trabajo; arrástralo para reposicionarlo.</p></article>
+        <article class="guide-step"><h3>3. Ubicar una resistencia</h3><p>Selecciona <em>Resistencia</em>, colócala y haz clic sobre ella para editar su valor en ohmios (Ω).</p></article>
+        <article class="guide-step"><h3>4. Incorporar un condensador</h3><p>Selecciona <em>Condensador</em>. Haz clic en él para ingresar el valor en F, µF o nF.</p></article>
+        <article class="guide-step"><h3>5. Agregar fuente de voltaje</h3><p>Selecciona <em>Batería</em> y ajusta su voltaje (V) haciendo clic sobre ella.</p></article>
+        <article class="guide-step"><h3>6. Conectar con cables</h3><p>Selecciona el modo <em>Cable</em>, haz clic en el terminal de origen y luego en el de destino. ¡Verás electrones fluyendo!</p></article>
+        <article class="guide-step"><h3>7. Modificar valores</h3><p>Haz clic en cualquier componente. En el panel derecho edita su valor y pulsa <em>Aplicar</em>.</p></article>
+        <article class="guide-step"><h3>8. Usar el interruptor</h3><p>Haz clic sobre el interruptor para alternar entre abierto (○) y cerrado (●).</p></article>
+        <article class="guide-step"><h3>9. Conectar el amperímetro</h3><p>Colócalo <strong>en serie</strong> en la rama. Verás su pantalla LCD mostrar la corriente en vivo.</p></article>
+        <article class="guide-step"><h3>10. Conectar el voltímetro</h3><p>Colócalo <strong>en paralelo</strong> entre los puntos a medir. Su pantalla mostrará el voltaje.</p></article>
+        <article class="guide-step"><h3>11. Iniciar simulación</h3><p>Pulsa <strong>▶ Iniciar</strong>. La simulación avanza. Puedes pausar y reanudar.</p></article>
+        <article class="guide-step"><h3>12. Observar la carga</h3><p>Pulsa <strong>⚡ Cargar</strong>. El voltaje del condensador sube exponencialmente.</p></article>
+        <article class="guide-step"><h3>13. Realizar la descarga</h3><p>Pulsa <strong>🔌 Descargar</strong>. El voltaje decae exponencialmente hacia 0 V.</p></article>
+        <article class="guide-step"><h3>14. Interpretar gráficos</h3><p>Observa los gráficos inferiores. Las líneas amarillas punteadas marcan 1τ, 2τ, 3τ...</p></article>
+        <article class="guide-step"><h3>15. Identificar τ</h3><p>La constante τ = R·C se muestra en el panel de mediciones. En t = τ, V<sub>C</sub> ≈ 63.2% de V fuente.</p></article>
+        <article class="guide-step"><h3>16. Reiniciar</h3><p>El botón <strong>⟲ Reiniciar</strong> detiene la simulación y vuelve al estado inicial.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <!-- PESTAÑA EXPERIMENTOS (AHORA CON CONTENIDO) -->
+  <main id="tab-experiments" class="tab-panel">
+    <section class="panel">
+      <h2 class="panel-title">Experimentos preconfigurados</h2>
+      <div class="experiments-grid" id="experiments-grid">
+        <!-- Aquí JavaScript inyectará las tarjetas -->
+      </div>
+    </section>
+  </main>
+
+  <!-- PESTAÑA CRÉDITOS (AHORA CON CONTENIDO) -->
+  <main id="tab-about" class="tab-panel">
+    <section class="panel">
+      <h2 class="panel-title">Créditos del proyecto</h2>
+      <div class="credit-card">
+        <p><strong>Proyecto:</strong> Laboratorio Virtual de Física – Circuitos Eléctricos RC</p>
+        <p><strong>Desarrollado por:</strong> Roger Villa</p>
+        <p><strong>Área:</strong> Física – Electricidad y Electromagnetismo</p>
+        <p><strong>Tema:</strong> Circuitos eléctricos, resistencia, capacitancia y transitorios RC</p>
+        <p><strong>Tipo de herramienta:</strong> Simulador educativo interactivo</p>
+        <p class="disclaimer">⚠️ Esta aplicación es una <strong>simulación numérica educativa</strong>. Los valores mostrados provienen del modelo matemático de circuitos RC y no constituyen mediciones de un circuito físico real.</p>
+      </div>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
