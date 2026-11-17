@@ -1,120 +1,53 @@
-/* ============================================================
-   LABORATORIO VIRTUAL DE FÍSICA – CIRCUITOS RC
-   Autor: Roger Villa
-   Tema: científico moderno (fondo oscuro elegante)
-   ============================================================ */
-
 :root {
-  --bg-0: #070b12;
-  --bg-1: #0d1420;
-  --bg-2: #121b2a;
-  --panel: rgba(18, 27, 42, 0.85);
-  --panel-border: rgba(80, 130, 180, 0.18);
-  --text: #e6eef7;
-  --text-dim: #93a6bd;
-  --accent: #3fd0c9;
-  --accent-2: #7c5cff;
-  --warn: #f0b429;
-  --danger: #ef5b6b;
-  --success: #34d399;
-  --radius: 14px;
-  --shadow: 0 10px 30px rgba(0,0,0,0.45);
+  --bg-0: #070b12; --bg-1: #0d1420; --panel: rgba(18, 27, 42, 0.85);
+  --panel-border: rgba(80, 130, 180, 0.18); --text: #e6eef7; --text-dim: #93a6bd;
+  --accent: #3fd0c9; --accent-2: #7c5cff; --warn: #f0b429; --danger: #ef5b6b; --success: #34d399;
+  --radius: 14px; --shadow: 0 10px 30px rgba(0,0,0,0.45);
   --font: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: radial-gradient(1200px 600px at 20% -10%, #12253a 0%, var(--bg-0) 60%), var(--bg-0); color: var(--text); font-family: var(--font); min-height: 100%; -webkit-font-smoothing: antialiased; }
 
-html, body {
-  background: radial-gradient(1200px 600px at 20% -10%, #12253a 0%, var(--bg-0) 60%), var(--bg-0);
-  color: var(--text);
-  font-family: var(--font);
-  min-height: 100%;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ---------- HEADER ---------- */
-.app-header {
-  display: flex; flex-wrap: wrap; gap: 16px;
-  align-items: center; justify-content: space-between;
-  padding: 18px 28px;
-  background: linear-gradient(180deg, rgba(13,20,32,0.95), rgba(13,20,32,0.6));
-  border-bottom: 1px solid var(--panel-border);
-  position: sticky; top: 0; z-index: 50;
-  backdrop-filter: blur(8px);
-}
+/* HEADER */
+.app-header { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 18px 28px; background: linear-gradient(180deg, rgba(13,20,32,0.95), rgba(13,20,32,0.6)); border-bottom: 1px solid var(--panel-border); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px); }
 .brand { display: flex; align-items: center; gap: 14px; }
 .brand-logo { filter: drop-shadow(0 0 8px rgba(63,208,201,0.45)); }
 .app-header h1 { font-size: 1.25rem; letter-spacing: 0.3px; }
 .subtitle { font-size: 0.8rem; color: var(--text-dim); margin-top: 2px; }
 .header-meta { display: flex; gap: 8px; flex-wrap: wrap; }
-.badge {
-  font-size: 0.72rem; padding: 6px 10px; border-radius: 999px;
-  background: rgba(63,208,201,0.10); color: var(--accent);
-  border: 1px solid rgba(63,208,201,0.35);
-}
+.badge { font-size: 0.72rem; padding: 6px 10px; border-radius: 999px; background: rgba(63,208,201,0.10); color: var(--accent); border: 1px solid rgba(63,208,201,0.35); }
 .badge-alt { background: rgba(124,92,255,0.10); color: #b8a6ff; border-color: rgba(124,92,255,0.35); }
 
-/* ---------- TABS ---------- */
+/* TABS */
 .tabs { display: flex; gap: 4px; padding: 10px 28px 0; flex-wrap: wrap; }
-.tab-btn {
-  background: transparent; color: var(--text-dim); border: none;
-  padding: 10px 16px; border-radius: 10px 10px 0 0; cursor: pointer;
-  font-size: 0.9rem; font-weight: 600; transition: all 0.2s;
-  border-bottom: 2px solid transparent;
-}
+.tab-btn { background: transparent; color: var(--text-dim); border: none; padding: 10px 16px; border-radius: 10px 10px 0 0; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; border-bottom: 2px solid transparent; }
 .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
 .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(63,208,201,0.06); }
-
 .tab-panel { display: none; padding: 18px 28px 40px; }
 .tab-panel.active { display: block; animation: fade 0.25s ease; }
 @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-/* ---------- LAYOUT LAB ---------- */
-.lab-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr 300px;
-  gap: 16px;
-  align-items: start;
-}
-@media (max-width: 1100px) {
-  .lab-layout { grid-template-columns: 1fr; }
-}
-
-/* ---------- PANELES ---------- */
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--panel-border);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(6px);
-}
-.panel-title {
-  font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.2px;
-  color: var(--accent); margin-bottom: 10px; font-weight: 700;
-}
+/* LAYOUT */
+.lab-layout { display: grid; grid-template-columns: 260px 1fr 300px; gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .lab-layout { grid-template-columns: 1fr; } }
+.panel { background: var(--panel); border: 1px solid var(--panel-border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); backdrop-filter: blur(6px); }
+.panel-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 10px; font-weight: 700; }
 .panel-title.mt { margin-top: 18px; }
 .panel-hint { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 12px; line-height: 1.4; }
 .small-note { font-size: 0.7rem; color: var(--text-dim); margin-top: 10px; font-style: italic; }
 
-/* ---------- BIBLIOTECA ---------- */
+/* BIBLIOTECA */
 .component-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.comp-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  background: rgba(255,255,255,0.03); border: 1px solid var(--panel-border);
-  color: var(--text); border-radius: 10px; padding: 10px 6px; cursor: pointer;
-  font-size: 0.7rem; transition: all 0.2s;
-}
+.comp-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; background: rgba(255,255,255,0.03); border: 1px solid var(--panel-border); color: var(--text); border-radius: 10px; padding: 10px 6px; cursor: pointer; font-size: 0.7rem; transition: all 0.2s; }
 .comp-btn svg { width: 42px; height: 30px; color: var(--accent); }
 .comp-btn:hover { border-color: var(--accent); background: rgba(63,208,201,0.08); transform: translateY(-1px); }
 .comp-btn.active { border-color: var(--accent); background: rgba(63,208,201,0.15); box-shadow: 0 0 0 1px var(--accent) inset; }
-
 .tool-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
 .warnings { margin-top: 12px; font-size: 0.75rem; line-height: 1.4; }
 .warn-msg { padding: 8px 10px; border-radius: 8px; background: rgba(240,180,41,0.10); color: var(--warn); border: 1px solid rgba(240,180,41,0.3); margin-bottom: 6px; }
 .warn-msg.ok { background: rgba(52,211,153,0.10); color: var(--success); border-color: rgba(52,211,153,0.3); }
 
-/* ---------- WORKSPACE ---------- */
+/* WORKSPACE */
 .workspace-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
 .workspace-tools { display: flex; gap: 12px; align-items: center; font-size: 0.75rem; color: var(--text-dim); }
 .toggle-label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
@@ -123,17 +56,12 @@ html, body {
 .circuit-svg { display: block; width: 100%; min-width: 560px; height: 520px; cursor: crosshair; }
 .workspace-tip { font-size: 0.72rem; color: var(--text-dim); margin-top: 8px; }
 
-/* ---------- CONTROLES ---------- */
+/* CONTROLES */
 .control-group { margin-bottom: 12px; }
 .field-label { display: block; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 4px; }
 .slider { width: 100%; accent-color: var(--accent); }
-
 .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.btn {
-  border: 1px solid var(--panel-border); background: rgba(255,255,255,0.04);
-  color: var(--text); padding: 9px 10px; border-radius: 9px; cursor: pointer;
-  font-size: 0.78rem; font-weight: 600; transition: all 0.18s;
-}
+.btn { border: 1px solid var(--panel-border); background: rgba(255,255,255,0.04); color: var(--text); padding: 9px 10px; border-radius: 9px; cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: all 0.18s; }
 .btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.15); }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .btn-primary { background: rgba(63,208,201,0.15); border-color: rgba(63,208,201,0.5); color: var(--accent); }
@@ -143,80 +71,56 @@ html, body {
 .btn-ghost { background: rgba(255,255,255,0.02); }
 .btn-block { width: 100%; }
 
-/* ---------- MEDIDORES ---------- */
+/* MEDIDORES */
 .meters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.meter {
-  background: rgba(0,0,0,0.35); border: 1px solid var(--panel-border);
-  border-radius: 9px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px;
-}
+.meter { background: rgba(0,0,0,0.35); border: 1px solid var(--panel-border); border-radius: 9px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
 .meter-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.6px; }
 .meter-value { font-size: 0.95rem; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
-.meter-ammeter .meter-value { color: #ffb84d; }
-.meter-voltmeter .meter-value { color: #7cc7ff; }
 
-/* ---------- GRÁFICOS ---------- */
+/* GRÁFICOS */
 .panel-graphs { margin-top: 16px; }
 .graphs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media (max-width: 900px) { .graphs-grid { grid-template-columns: 1fr; } }
-.graph-card {
-  background: rgba(6,10,16,0.6); border: 1px solid var(--panel-border);
-  border-radius: 12px; padding: 10px;
-}
+.graph-card { background: rgba(6,10,16,0.6); border: 1px solid var(--panel-border); border-radius: 12px; padding: 10px; }
 .graph-card figcaption { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 6px; font-weight: 600; }
 .graph-card canvas { width: 100%; height: auto; display: block; border-radius: 8px; background: #060a10; }
 
-/* ---------- GUÍA ---------- */
+/* GUÍA Y EXPERIMENTOS */
 .content-panel { max-width: 1100px; margin: 0 auto; }
 .guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
 .guide-step { background: rgba(0,0,0,0.25); border: 1px solid var(--panel-border); border-radius: 10px; padding: 12px 14px; }
 .guide-step h3 { font-size: 0.85rem; color: var(--accent); margin-bottom: 6px; }
 .guide-step p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
-
-/* ---------- EXPERIMENTOS ---------- */
 .experiments-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
 .exp-card { background: rgba(0,0,0,0.25); border: 1px solid var(--panel-border); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
 .exp-card h3 { font-size: 0.9rem; color: var(--accent); }
 .exp-card p, .exp-card li { font-size: 0.76rem; color: var(--text-dim); line-height: 1.45; }
 .exp-card ul { padding-left: 16px; }
 .exp-card .exp-btn { margin-top: auto; }
-
-/* ---------- ABOUT ---------- */
 .about-panel { max-width: 800px; }
 .credit-card { background: rgba(0,0,0,0.25); border: 1px solid var(--panel-border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
 .credit-card p { font-size: 0.85rem; color: var(--text-dim); }
 .credit-card strong { color: var(--text); }
 .disclaimer { margin-top: 10px; padding: 10px; background: rgba(240,180,41,0.08); border: 1px solid rgba(240,180,41,0.3); border-radius: 8px; color: var(--warn) !important; font-size: 0.78rem; }
 
-/* ---------- PROPIEDADES (panel dinámico) ---------- */
+/* PROPIEDADES */
 .props-panel { margin-top: 14px; background: rgba(0,0,0,0.35); border: 1px solid var(--panel-border); border-radius: 10px; padding: 12px; display: none; }
 .props-panel.visible { display: block; }
 .props-panel h3 { font-size: 0.8rem; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.8px; }
 .prop-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
 .prop-row label { font-size: 0.72rem; color: var(--text-dim); }
-.prop-row input, .prop-row select {
-  background: rgba(0,0,0,0.5); border: 1px solid var(--panel-border); color: var(--text);
-  padding: 6px 8px; border-radius: 7px; font-size: 0.8rem; font-family: var(--font);
-}
+.prop-row input, .prop-row select { background: rgba(0,0,0,0.5); border: 1px solid var(--panel-border); color: var(--text); padding: 6px 8px; border-radius: 7px; font-size: 0.8rem; font-family: var(--font); }
 .prop-row input:focus, .prop-row select:focus { outline: none; border-color: var(--accent); }
-.prop-actions { display: flex; gap: 6px; margin-top: 6px; }
 
-/* ---------- FOOTER ---------- */
-.app-footer {
-  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-  padding: 16px 28px; border-top: 1px solid var(--panel-border);
-  font-size: 0.72rem; color: var(--text-dim);
-  background: rgba(6,10,16,0.7);
-}
-
-/* ---------- SVG ELEMENTOS ---------- */
+/* FOOTER Y SVG */
+.app-footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 16px 28px; border-top: 1px solid var(--panel-border); font-size: 0.72rem; color: var(--text-dim); background: rgba(6,10,16,0.7); }
 .svg-component { cursor: move; }
 .svg-component.selected .comp-body { stroke: var(--accent); stroke-width: 2.6; filter: drop-shadow(0 0 6px rgba(63,208,201,0.8)); }
 .svg-component text { user-select: none; pointer-events: none; font-family: var(--font); }
 .terminal { fill: #0d1420; stroke: var(--accent); stroke-width: 1.8; cursor: crosshair; }
 .terminal:hover { fill: var(--accent); }
 .terminal.wire-start { fill: var(--warn); stroke: var(--warn); }
-.wire-path { fill: none; stroke: #5fb3d4; stroke-width: 2.4; stroke-linecap: round; }
+.wire-path { fill: none; stroke: #5fb3d4; stroke-width: 3.5; stroke-linecap: round; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.6)); }
 .wire-path.active { stroke: var(--accent); filter: drop-shadow(0 0 4px rgba(63,208,201,0.6)); }
-.flow-dot { fill: var(--warn); }
 .switch-closed { stroke: var(--accent); }
 .switch-open { stroke: var(--danger); }
