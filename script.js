@@ -33,13 +33,13 @@ function engFormat(value, baseUnit) {
 }
 
 const COMPONENTS = {
-  source:     { label: 'Fuente DC',    w: 60, h: 60, terminals: [{x:0,y:-30},{x:0,y:30}], value: 10, unit: 'V', editable: 'value' },
-  resistor:   { label: 'Resistencia',  w: 60, h: 30, terminals: [{x:-30,y:0},{x:30,y:0}], value: 1000, unit: 'Ω', editable: 'value' },
-  capacitor:  { label: 'Condensador',  w: 60, h: 40, terminals: [{x:-30,y:0},{x:30,y:0}], value: 1e-6, unit: 'F', editable: 'value' },
-  switch:     { label: 'Interruptor',  w: 60, h: 30, terminals: [{x:-30,y:0},{x:30,y:0}], closed: false, editable: 'switch' },
-  ground:     { label: 'Tierra',       w: 40, h: 40, terminals: [{x:0,y:-20}], editable: null },
-  ammeter:    { label: 'Amperímetro',  w: 60, h: 50, terminals: [{x:-30,y:0},{x:30,y:0}], editable: null },
-  voltmeter:  { label: 'Voltímetro',   w: 60, h: 50, terminals: [{x:-30,y:0},{x:30,y:0}], editable: null },
+  source:     { label: 'Batería',      w: 80, h: 40, terminals: [{x:-40,y:0},{x:40,y:0}], value: 10, unit: 'V' },
+  resistor:   { label: 'Resistencia',  w: 70, h: 20, terminals: [{x:-35,y:0},{x:35,y:0}], value: 1000, unit: 'Ω' },
+  capacitor:  { label: 'Condensador',  w: 60, h: 30, terminals: [{x:-30,y:0},{x:30,y:0}], value: 1e-6, unit: 'F' },
+  switch:     { label: 'Interruptor',  w: 70, h: 20, terminals: [{x:-35,y:0},{x:35,y:0}], closed: false },
+  ground:     { label: 'Tierra',       w: 40, h: 40, terminals: [{x:0,y:-20}] },
+  ammeter:    { label: 'Amperímetro',  w: 70, h: 50, terminals: [{x:-30,y:0},{x:30,y:0}] },
+  voltmeter:  { label: 'Voltímetro',   w: 70, h: 50, terminals: [{x:-30,y:0},{x:30,y:0}] },
 };
 
 function renderComponent(c) {
@@ -53,15 +53,22 @@ function renderComponent(c) {
     const label = isAmp ? 'A' : 'V';
     const bg = isAmp ? '#2a1f0a' : '#0a1a2a';
     
-    el('rect', { class:'comp-body', x:-30, y:-25, width:60, height:50, rx:6, fill:'#1a2233', stroke:'#3a5570', 'stroke-width':2, filter:'url(#shadow)' }, g);
-    el('rect', { x:-24, y:-18, width:48, height:22, rx:3, fill:bg, stroke:color, 'stroke-width':1 }, g);
-    el('text', { x:-20, y:-5, 'text-anchor':'start', fill:color, 'font-size':12, 'font-weight':700 }, g).textContent = label;
+    // Cuerpo del multímetro realista
+    el('rect', { class:'comp-body', x:-30, y:-35, width:60, height:70, rx:8, fill:'#2d2d2d', stroke:'#111', 'stroke-width':3, filter:'url(#shadow)' }, g);
+    // Pantalla LCD
+    el('rect', { x:-24, y:-28, width:48, height:24, rx:3, fill:bg, stroke:'#444', 'stroke-width':2 }, g);
+    el('text', { x:-18, y:-12, 'text-anchor':'start', fill:color, 'font-size':10, 'font-weight':700 }, g).textContent = label;
+    // Selector de perilla
+    el('circle', { cx: 0, cy: 15, r: 10, fill:'#444', stroke:'#222', 'stroke-width':2 }, g);
+    el('line', { x1:0, y1:15, x2:0, y2:5, stroke:'#ccc', 'stroke-width':2 }, g);
     
-    const valText = el('text', { class:'lcd-value', x:5, y:-3, 'text-anchor':'middle', fill:color, 'font-size':13, 'font-family':'monospace', 'font-weight':'bold' }, g);
+    const valText = el('text', { class:'lcd-value', x:2, y:-10, 'text-anchor':'middle', fill:color, 'font-size':13, 'font-family':'monospace', 'font-weight':'bold' }, g);
     valText.textContent = '0.00';
     
     meta.terminals.forEach((t, i) => {
       el('circle', { class:'terminal', cx:t.x, cy:t.y, r:5, 'data-comp':c.id, 'data-term':i }, g).addEventListener('mousedown', (e) => onTerminalMouseDown(e, c, i));
+      // Cables de prueba rojo/negro
+      el('path', { d: `M ${t.x} ${t.y} Q ${t.x + (i===0?-10:10)} ${t.y+20} ${t.x} ${t.y+45}`, fill:'none', stroke: i===0?'#ff3333':'#333', 'stroke-width':3 }, g);
     });
     c._lcdText = valText;
     return g;
@@ -69,37 +76,42 @@ function renderComponent(c) {
 
   switch (c.type) {
     case 'source':
-      el('circle', { class:'comp-body', cx:0, cy:0, r:26, fill:'rgba(63,208,201,0.08)', stroke:'#3fd0c9', 'stroke-width':2.2 }, g);
-      el('line', { x1:-10,y1:0,x2:10,y2:0, stroke:'#3fd0c9','stroke-width':2 }, g);
-      el('line', { x1:0,y1:-10,x2:0,y2:10, stroke:'#3fd0c9','stroke-width':2 }, g);
-      el('text', { x:0, y:-34, 'text-anchor':'middle', fill:'#e6eef7', 'font-size':11 }, g).textContent = (c.value ?? 0).toFixed(2) + ' V';
+      // Batería tipo pila rectangular PhET
+      el('rect', { class:'comp-body', x:-35, y:-18, width:70, height:36, rx:4, fill:'#111', stroke:'#333', 'stroke-width':2, filter:'url(#shadow)' }, g);
+      el('rect', { x:-35, y:-18, width:25, height:36, rx:4, fill:'#f0b429' }, g); // Lado positivo
+      el('text', { x:-22, y:5, 'text-anchor':'middle', fill:'#111', 'font-size':18, 'font-weight':900 }, g).textContent = '+';
+      el('text', { x:22, y:5, 'text-anchor':'middle', fill:'#666', 'font-size':18, 'font-weight':900 }, g).textContent = '-';
+      el('text', { x:0, y:-25, 'text-anchor':'middle', fill:'#e6eef7', 'font-size':12 }, g).textContent = (c.value ?? 0).toFixed(2) + ' V';
       break;
     case 'resistor':
-      el('rect', { class:'comp-body', x:-30,y:-15,width:60,height:30, fill:'rgba(240,180,41,0.06)', stroke:'#f0b429','stroke-width':2.2, rx:4 }, g);
-      el('line', { x1:-38,y1:0,x2:-30,y2:0, stroke:'#f0b429','stroke-width':2 }, g);
-      el('line', { x1:30,y1:0,x2:38,y2:0, stroke:'#f0b429','stroke-width':2 }, g);
-      el('text', { x:0, y:-20, 'text-anchor':'middle', fill:'#e6eef7', 'font-size':11 }, g).textContent = c.value >= 1e6 ? (c.value/1e6).toFixed(2)+' MΩ' : c.value >= 1e3 ? (c.value/1e3).toFixed(2)+' kΩ' : c.value.toFixed(0)+' Ω';
+      // Resistencia con franjas de colores
+      el('rect', { class:'comp-body', x:-35,y:-10,width:70,height:20, fill:'#e0c88a', stroke:'#a08040','stroke-width':2, rx:5, filter:'url(#shadow)' }, g);
+      el('line', { x1:-25,y1:-10,x2:-25,y2:10, stroke:'#000','stroke-width':3 }, g); // Negro
+      el('line', { x1:-15,y1:-10,x2:-15,y2:10, stroke:'#8B4513','stroke-width':3 }, g); // Café
+      el('line', { x1:-5,y1:-10,x2:-5,y2:10, stroke:'#FF0000','stroke-width':3 }, g); // Rojo
+      el('line', { x1:25,y1:-10,x2:25,y2:10, stroke:'#D4AF37','stroke-width':3 }, g); // Dorado
+      el('text', { x:0, y:-18, 'text-anchor':'middle', fill:'#e6eef7', 'font-size':11 }, g).textContent = c.value >= 1e3 ? (c.value/1e3).toFixed(2)+' kΩ' : c.value.toFixed(0)+' Ω';
       break;
     case 'capacitor':
-      el('line', { x1:-30,y1:0,x2:-6,y2:0, stroke:'#7c5cff','stroke-width':2 }, g);
-      el('line', { x1:6,y1:0,x2:30,y2:0, stroke:'#7c5cff','stroke-width':2 }, g);
-      el('line', { class:'comp-body', x1:-6,y1:-18,x2:-6,y2:18, stroke:'#7c5cff','stroke-width':3 }, g);
-      el('line', { class:'comp-body', x1:6,y1:-18,x2:6,y2:18, stroke:'#7c5cff','stroke-width':3 }, g);
+      // Condensador cilíndrico
+      el('rect', { class:'comp-body', x:-20, y:-15, width:40, height:30, rx:3, fill:'#1f4a7a', stroke:'#3a5570', 'stroke-width':2, filter:'url(#shadow)' }, g);
+      el('line', { x1:-6, y1:-18, x2:-6, y2:18, stroke:'#ccc', 'stroke-width':4 }, g);
+      el('line', { x1:6, y1:-18, x2:6, y2:18, stroke:'#ccc', 'stroke-width':4 }, g);
       el('text', { x:0, y:-24, 'text-anchor':'middle', fill:'#e6eef7', 'font-size':11 }, g).textContent = c.value >= 1e-6 ? (c.value*1e6).toFixed(2)+' µF' : (c.value*1e9).toFixed(2)+' nF';
       break;
     case 'switch':
-      el('line', { x1:-38,y1:0,x2:-18,y2:0, stroke:'#34d399','stroke-width':2 }, g);
-      el('line', { x1:18,y1:0,x2:38,y2:0, stroke:'#34d399','stroke-width':2 }, g);
-      el('circle', { cx:-18, cy:0, r:3, fill:'#34d399' }, g);
-      el('circle', { cx:18, cy:0, r:3, fill:'#34d399' }, g);
-      if (c.closed) el('line', { class:'comp-body switch-closed', x1:-18,y1:0,x2:18,y2:0, stroke:'#3fd0c9','stroke-width':2.6 }, g);
-      else el('line', { class:'comp-body switch-open', x1:-18,y1:0,x2:14,y2:-14, stroke:'#ef5b6b','stroke-width':2.6 }, g);
+      el('line', { x1:-35,y1:0,x2:-20,y2:0, stroke:'#00bcd4','stroke-width':4 }, g);
+      el('line', { x1:20,y1:0,x2:35,y2:0, stroke:'#00bcd4','stroke-width':4 }, g);
+      el('circle', { cx:-20, cy:0, r:4, fill:'#ccc' }, g);
+      el('circle', { cx:20, cy:0, r:4, fill:'#ccc' }, g);
+      if (c.closed) el('line', { class:'comp-body', x1:-20,y1:0,x2:20,y2:0, stroke:'#00bcd4','stroke-width':4 }, g);
+      else el('line', { class:'comp-body', x1:-20,y1:0,x2:15,y2:-18, stroke:'#ff5252','stroke-width':4 }, g);
       break;
     case 'ground':
-      el('line', { x1:0,y1:-20,x2:0,y2:0, stroke:'#93a6bd','stroke-width':2 }, g);
-      el('line', { class:'comp-body', x1:-16,y1:0,x2:16,y2:0, stroke:'#93a6bd','stroke-width':2.2 }, g);
-      el('line', { x1:-10,y1:6,x2:10,y2:6, stroke:'#93a6bd','stroke-width':2.2 }, g);
-      el('line', { x1:-4,y1:12,x2:4,y2:12, stroke:'#93a6bd','stroke-width':2.2 }, g);
+      el('line', { x1:0,y1:-20,x2:0,y2:0, stroke:'#93a6bd','stroke-width':3 }, g);
+      el('line', { class:'comp-body', x1:-16,y1:0,x2:16,y2:0, stroke:'#93a6bd','stroke-width':4 }, g);
+      el('line', { x1:-10,y1:6,x2:10,y2:6, stroke:'#93a6bd','stroke-width':3 }, g);
+      el('line', { x1:-4,y1:12,x2:4,y2:12, stroke:'#93a6bd','stroke-width':2 }, g);
       break;
   }
   meta.terminals.forEach((t, i) => {
@@ -254,7 +266,7 @@ function analyzeCircuit() {
   const resistors = state.components.filter(c => c.type === 'resistor');
   const capacitors = state.components.filter(c => c.type === 'capacitor');
   const switches = state.components.filter(c => c.type === 'switch');
-  if (!source || resistors.length === 0 || capacitors.length === 0) return { valid: false, reason: 'Se requiere una fuente, al menos una resistencia y un condensador.' };
+  if (!source || resistors.length === 0 || capacitors.length === 0) return { valid: false, reason: 'Se requiere una batería, al menos una resistencia y un condensador.' };
   const R = resistors.reduce((s, r) => s + r.value, 0);
   const C = capacitors.reduce((s, c) => s + c.value, 0);
   if (R <= 0 || C <= 0) return { valid: false, reason: 'R y C deben ser mayores que cero.' };
@@ -317,12 +329,8 @@ function step(ts) {
   const currentVc = state.history.vc.length ? state.history.vc[state.history.vc.length - 1] : 0;
   
   state.components.forEach(c => {
-    if (c.type === 'ammeter' && c._lcdText) { 
-      c._lcdText.textContent = engFormat(Math.abs(currentI), 'A'); 
-    }
-    if (c.type === 'voltmeter' && c._lcdText) { 
-      c._lcdText.textContent = fmt(currentVc, 'V', 2); 
-    }
+    if (c.type === 'ammeter' && c._lcdText) { c._lcdText.textContent = engFormat(Math.abs(currentI), 'A'); }
+    if (c.type === 'voltmeter' && c._lcdText) { c._lcdText.textContent = fmt(currentVc, 'V', 2); }
   });
   requestAnimationFrame(step);
 }
@@ -418,27 +426,30 @@ function drawElectrons() {
   const i = state.history.i.length ? state.history.i[state.history.i.length - 1] : 0;
   const current = Math.abs(i); if (current < 1e-7) return;
   
-  const numElectrons = Math.min(20, Math.max(3, Math.floor(current * 100000))); 
-  electronAnimFrame += (current > 0 ? 0.02 : -0.02);
+  // ESTILO PHET: Electrones azules con punta de flecha
+  const numElectrons = Math.min(25, Math.max(5, Math.floor(current * 150000))); 
+  electronAnimFrame += (current > 0 ? 0.025 : -0.025);
 
   state.wires.forEach(w => {
     const p1 = getTerminalPos(w.a.compId, w.a.termIdx); const p2 = getTerminalPos(w.b.compId, w.b.termIdx);
     if (!p1 || !p2) return;
     
-    // Dibujar electrones (Partículas amarillas sólidas más grandes)
     for (let j = 0; j < numElectrons; j++) {
       let t = (j / numElectrons + electronAnimFrame) % 1; if (t < 0) t += 1;
       const x = p1.x + (p2.x - p1.x) * t; const y = p1.y + (p2.y - p1.y) * t;
-      el('circle', { cx: x, cy: y, r: 5, fill: '#ffd700', filter: 'url(#glow)', opacity: 1 }, particlesLayer);
-    }
+      
+      // Calcular ángulo para la flecha
+      const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 
-    // Paquetes de ENERGÍA (Pulsos de luz naranja)
-    const numEnergyPulses = Math.min(5, Math.max(1, Math.floor(current * 50000)));
-    for (let k = 0; k < numEnergyPulses; k++) {
-      let te = (k / numEnergyPulses + electronAnimFrame * 1.5) % 1; if (te < 0) te += 1;
-      const ex = p1.x + (p2.x - p1.x) * te; const ey = p1.y + (p2.y - p1.y) * te;
-      el('circle', { cx: ex, cy: ey, r: 7, fill: 'rgba(255, 100, 0, 0.4)', filter: 'url(#glow)' }, particlesLayer);
-      el('circle', { cx: ex, cy: ey, r: 3, fill: '#ffffff', filter: 'url(#glow)' }, particlesLayer);
+      // Dibujar el electrón como un círculo azul con un halo brillante
+      el('circle', { cx: x, cy: y, r: 6, fill: '#00d2ff', filter: 'url(#glow)', opacity: 0.9 }, particlesLayer);
+      
+      // Dibujar la flechita interior
+      el('path', { 
+        d: `M ${x-2} ${y-3} L ${x+3} ${y} L ${x-2} ${y+3} Z`, 
+        fill: '#ffffff', 
+        transform: `rotate(${angle}, ${x}, ${y})` 
+      }, particlesLayer);
     }
   });
 }
@@ -473,14 +484,22 @@ function renderExperiments() {
 function loadExperiment(idx) {
   const exp = EXPERIMENTS[idx]; if (!exp) return;
   state.components = []; state.wires = []; state.selectedId = null; state.wireStart = null; state.mode = 'idle'; state.placingType = null;
-  const src = { id: state.nextId++, type: 'source', x: 120, y: 160, value: exp.config.V };
-  const res = { id: state.nextId++, type: 'resistor', x: 300, y: 120, value: exp.config.R };
-  const cap = { id: state.nextId++, type: 'capacitor', x: 300, y: 300, value: exp.config.C };
-  const sw = { id: state.nextId++, type: 'switch', x: 480, y: 160, closed: true };
-  const gnd = { id: state.nextId++, type: 'ground', x: 120, y: 300 };
-  state.components.push(src, res, cap, sw, gnd);
+  
+  // Posiciones para que se vea como un lazo rectangular perfecto
+  const src = { id: state.nextId++, type: 'source', x: 150, y: 150, value: exp.config.V };
+  const res = { id: state.nextId++, type: 'resistor', x: 350, y: 130, value: exp.config.R };
+  const sw = { id: state.nextId++, type: 'switch', x: 500, y: 150, closed: true };
+  const cap = { id: state.nextId++, type: 'capacitor', x: 350, y: 300, value: exp.config.C };
+  
+  state.components.push(src, res, sw, cap);
   const addWire = (a, at, b, bt) => state.wires.push({ id: state.nextId++, a: { compId: a.id, termIdx: at }, b: { compId: b.id, termIdx: bt } });
-  addWire(src, 0, res, 0); addWire(res, 1, sw, 0); addWire(sw, 1, cap, 0); addWire(cap, 1, src, 1); addWire(src, 1, gnd, 0);
+  
+  // Conexiones
+  addWire(src, 0, res, 0); // + Batería a Resistencia
+  addWire(res, 1, sw, 0);  // Resistencia a Interruptor
+  addWire(sw, 1, cap, 0);  // Interruptor a Condensador
+  addWire(cap, 1, src, 1); // Condensador a - Batería
+  
   resetSimulation(); renderAll(); showWarning('Experimento cargado.', true);
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
