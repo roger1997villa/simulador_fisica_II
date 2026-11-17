@@ -24,7 +24,7 @@ function $(id) { return document.getElementById(id); }
 function fmt(value, unit, decimals = 3) { return !isFinite(value) ? '—' : value.toFixed(decimals) + ' ' + unit; }
 function engFormat(value, baseUnit) {
   const abs = Math.abs(value);
-  if (abs === 0 || abs < 1e-12) return '0.00 ' + baseUnit; // Corregido para evitar e-137
+  if (abs === 0 || abs < 1e-12) return '0.00 ' + baseUnit; 
   if (abs >= 1) return value.toFixed(3) + ' ' + baseUnit;
   if (abs >= 1e-3) return (value * 1e3).toFixed(2) + ' m' + baseUnit;
   if (abs >= 1e-6) return (value * 1e6).toFixed(2) + ' µ' + baseUnit;
@@ -313,7 +313,6 @@ function step(ts) {
   }
   updateMeasurements(); drawAllCharts(); drawElectrons();
   
-  // ACTUALIZACIÓN DE PANTALLAS LCD
   const currentI = state.history.i.length ? state.history.i[state.history.i.length - 1] : 0;
   const currentVc = state.history.vc.length ? state.history.vc[state.history.vc.length - 1] : 0;
   
@@ -418,15 +417,32 @@ function drawElectrons() {
   const a = analyzeCircuit(); if (!a.valid) return;
   const i = state.history.i.length ? state.history.i[state.history.i.length - 1] : 0;
   const current = Math.abs(i); if (current < 1e-7) return;
+  
   const numElectrons = Math.min(20, Math.max(3, Math.floor(current * 100000))); 
   electronAnimFrame += (current > 0 ? 0.02 : -0.02);
+
   state.wires.forEach(w => {
     const p1 = getTerminalPos(w.a.compId, w.a.termIdx); const p2 = getTerminalPos(w.b.compId, w.b.termIdx);
     if (!p1 || !p2) return;
+    
+    // Dibujar electrones (Partículas amarillas sólidas)
     for (let j = 0; j < numElectrons; j++) {
       let t = (j / numElectrons + electronAnimFrame) % 1; if (t < 0) t += 1;
       const x = p1.x + (p2.x - p1.x) * t; const y = p1.y + (p2.y - p1.y) * t;
       el('circle', { cx: x, cy: y, r: 3.5, fill: '#ffd700', filter: 'url(#glow)', opacity: 0.9 }, particlesLayer);
+    }
+
+    // NUEVO: Dibujar paquetes de ENERGÍA (Pulsos de luz naranja con estela)
+    // La energía se mueve igual que la corriente pero la representamos más rápida y luminosa.
+    const numEnergyPulses = Math.min(5, Math.max(1, Math.floor(current * 50000)));
+    for (let k = 0; k < numEnergyPulses; k++) {
+      let te = (k / numEnergyPulses + electronAnimFrame * 1.5) % 1; if (te < 0) te += 1;
+      const ex = p1.x + (p2.x - p1.x) * te; const ey = p1.y + (p2.y - p1.y) * te;
+      
+      // Estela de energía
+      el('circle', { cx: ex, cy: ey, r: 6, fill: 'rgba(255, 100, 0, 0.3)', filter: 'url(#glow)' }, particlesLayer);
+      // Núcleo brillante de la energía
+      el('circle', { cx: ex, cy: ey, r: 2.5, fill: '#ffffff', filter: 'url(#glow)' }, particlesLayer);
     }
   });
 }
