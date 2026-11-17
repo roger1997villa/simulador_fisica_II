@@ -539,6 +539,44 @@ function step(ts) {
 /* ============================================================
    10. MEDICIONES EN VIVO
    ============================================================ */
+/* ============================================================
+   10. MEDICIONES EN VIVO Y LECTURA DE INSTRUMENTOS
+   ============================================================ */
+function getNodeVoltage(compId, termIdx) {
+  // Para esta simulación simplificada, asumimos una topología de un solo lazo.
+  // Nodo positivo de la fuente = V. Nodo negativo = 0.
+  const comp = state.components.find(c => c.id === compId);
+  if (!comp) return 0;
+  
+  const source = state.components.find(c => c.type === 'source');
+  if (!source) return 0;
+
+  // Si estamos en el circuito de carga, el condensador se carga.
+  const a = analyzeCircuit();
+  if (!a.valid) return 0;
+
+  let vc = state.history.vc.length ? state.history.vc[state.history.vc.length - 1] : 0;
+  
+  // Lógica de voltajes por nodo asumiendo un lazo cerrado básico
+  if (comp.type === 'source') {
+    return termIdx === 0 ? source.value : 0;
+  }
+  // Resistencia: el voltaje depende de la corriente
+  if (comp.type === 'resistor') {
+    const i = state.history.i.length ? state.history.i[state.history.i.length - 1] : 0;
+    return termIdx === 0 ? (source.value - vc) : vc; // Aproximación del nodo
+  }
+  // Condensador: Vc
+  if (comp.type === 'capacitor') {
+    return termIdx === 0 ? vc : 0;
+  }
+  // Tierra
+  if (comp.type === 'ground') return 0;
+  
+  // Interruptores, cables, etc.
+  return 0;
+}
+
 function updateMeasurements() {
   const a = analyzeCircuit();
   const t = state.sim.t;
@@ -546,6 +584,7 @@ function updateMeasurements() {
   const i  = state.history.i.length  ? state.history.i[state.history.i.length - 1]  : 0;
   const q  = state.history.q.length  ? state.history.q[state.history.q.length - 1]  : 0;
 
+  // Actualizar panel general
   $('m-time').textContent = fmt(t, 's', 3);
   $('m-vsource').textContent = a.valid ? fmt(a.V, 'V', 2) : '—';
   $('m-vc').textContent = fmt(vc, 'V', 3);
@@ -553,10 +592,40 @@ function updateMeasurements() {
   $('m-q').textContent = engFormat(q, 'C');
   $('m-tau').textContent = a.valid ? engFormat(a.tau, 's') : '—';
 
-  // Amperímetro: mide |i|
-  $('m-ammeter').textContent = a.valid ? engFormat(Math.abs(i), 'A') : '— A';
-  // Voltímetro: mide Vc (selección por defecto)
-  $('m-voltmeter').textContent = a.valid ? fmt(vc, 'V', 3) : '— V';
+  // ---- LÓGICA DEL AMPERÍMETRO ----
+  const ammeters = state.components.filter(c => c.type === 'ammeter');
+  if (ammeters.length > 0) {
+    // Si hay un amperímetro conectado en serie, su lectura es la corriente del lazo.
+    $('m-ammeter').textContent = a.valid ? engFormat(Math.abs(i), 'A') : '0.00 A';
+  } else {
+    $('m-ammeter').textContent = 'No conectado';
+  }
+
+  // ---- LÓGICA DEL VOLTÍMETRO DINÁMICO ----
+  const voltmeters = state.components.filter(c => c.type === 'voltmeter');
+  if (voltmeters.length > 0) {
+    const vm = voltmeters[0]; // Analizamos el primer voltímetro
+    // Buscar cables conectados a sus terminales
+    const wireA = state.wires.find(w => (w.a.compId === vm.id && w.a.termIdx === 0) || (w.b.compId === vm.id && w.b.termIdx === 0));
+    const wireB = state.wires.find(w => (w.a.compId === vm.id && w.a.termIdx === 1) || (w.b.compId === vm.id && w.b.termIdx === 1));
+
+    if (wireA && wireB) {
+      // Obtener el otro extremo del cable
+      const otherA = wireA.a.compId === vm.id ? wireA.b : wireA.a;
+      const otherB = wireB.a.compId === vm.id ? wireB.b : wireB.a;
+
+      // Obtener el voltaje en esos nodos usando nuestra función
+      const vA = getNodeVoltage(otherA.compId, otherA.termIdx);
+      const vB = getNodeVoltage(otherB.compId, otherB.termIdx);
+      
+      const diff = Math.abs(vA - vB);
+      $('m-voltmeter').textContent = fmt(diff, 'V', 3);
+    } else {
+      $('m-voltmeter').textContent = 'Circuito abierto';
+    }
+  } else {
+    $('m-voltmeter').textContent = 'No conectado';
+  }
 }
 
 function updateSelInfo() {
